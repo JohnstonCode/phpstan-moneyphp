@@ -1,6 +1,7 @@
 {
     "name": "johnstoncode/phpstan-moneyphp",
     "description": "moneyphp Money class reflection extension for PHPStan",
+    "minimum-stability": "dev",
     "authors": [
         {
             "name": "Chris Johnston",
