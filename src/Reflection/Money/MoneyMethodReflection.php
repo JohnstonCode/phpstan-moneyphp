@@ -5,38 +5,25 @@ namespace JohnstonCode\Reflection\Money;
 use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
-use PHPStan\Reflection\Php\DummyParameter;
-use PHPStan\Type\CommonUnionType;
-use PHPStan\Type\MixedType;
-use PHPStan\Type\ObjectType;
-use PHPStan\Type\StringType;
+use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Type\Type;
+use PHPStan\Type\VoidType;
 
 class MoneyMethodReflection implements MethodReflection
 {
     private $classReflection;
     private $name;
-    private $isStatic;
-    private $isPrivate;
-    private $isPublic;
+    private $static;
+    private $private;
+    private $return;
 
-    public function __construct(ClassReflection $classReflection, string $name, bool $isStatic, bool $isPrivate, bool $isPublic)
+    public function __construct(ClassReflection $classReflection, string $name,  bool $static, bool $private, $return = null)
     {
         $this->classReflection = $classReflection;
         $this->name = $name;
-        $this->isStatic = $isStatic;
-        $this->isPrivate = $isPrivate;
-        $this->isPublic = $isPublic;
-    }
-
-    public function getName(): string
-    {
-        return $this->name;
-    }
-
-    public function getPrototype(): ClassMemberReflection
-    {
-        return $this;
+        $this->static = $static;
+        $this->private = $private;
+        $this->return = $return;
     }
 
     public function getDeclaringClass(): ClassReflection
@@ -44,19 +31,35 @@ class MoneyMethodReflection implements MethodReflection
         return $this->classReflection;
     }
 
+    public function getPrototype(): ClassMemberReflection
+    {
+        return $this;
+    }
+
     public function isStatic(): bool
     {
-        return $this->isStatic;
+        return $this->static;
     }
 
     public function isPrivate(): bool
     {
-        return $this->isPrivate;
+        return $this->private;
     }
 
     public function isPublic(): bool
     {
-        return $this->isPublic;
+        return !$this->private;
+    }
+
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
+
+    public function getParameters(): array
+    {
+        return [];
     }
 
     public function isVariadic(): bool
@@ -64,11 +67,22 @@ class MoneyMethodReflection implements MethodReflection
         return false;
     }
 
+    public function getReturnType()
+    {
+        return $this->return;
+    }
+
     /**
      * @return \PHPStan\Reflection\ParametersAcceptor[]
      */
     public function getVariants(): array
     {
-        return [];
+        return [
+            new FunctionVariant(
+                [],
+                true,
+                new VoidType()
+            ),
+        ];
     }
 }

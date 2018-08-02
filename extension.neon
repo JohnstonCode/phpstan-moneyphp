@@ -1,5 +1,5 @@
 services:
   -
-    class: JohnstonCode\Reflection\Money\MoneyClassReflectionExtension
+    class: JohnstonCode\Reflection\Money\MoneyMethodsReflectionExtension
     tags:
       - phpstan.broker.methodsClassReflectionExtension
