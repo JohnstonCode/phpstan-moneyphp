@@ -3,6 +3,8 @@
 * [PHPStan](https://github.com/phpstan/phpstan)
 * [Money](https://github.com/moneyphp/money)
 
+# THIS IS NOT FINISHED!!!
+
 ## Usage
 
 To use this extension, require it in [Composer](https://getcomposer.org/):
