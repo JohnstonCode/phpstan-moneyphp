@@ -17,20 +17,11 @@ class MoneyMethodsReflectionExtension implements MethodsClassReflectionExtension
 
         $currencies = Currency::getCurrencies();
 
-        return ($classReflection->getNativeReflection()->hasMethod($methodName) || array_key_exists($methodName, $currencies));
+        return array_key_exists($methodName, $currencies);
     }
 
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
     {
-        $currencies = Currency::getCurrencies();
-
-        if (array_key_exists($methodName, $currencies)) {
-            return new MoneyStaticMethodReflection($classReflection, $methodName);
-        }
-
-        $method = $classReflection->getNativeReflection()->getMethod($methodName);
-
-        return new MoneyMethodReflection($classReflection, $methodName, $method->isStatic(), $method->isPrivate());
+        return new MoneyStaticMethodReflection($classReflection, $methodName);
     }
-
 }
