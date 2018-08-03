@@ -2,11 +2,10 @@
 
 namespace JohnstonCode\Reflection\Money;
 
-use Money\{Money, Currency};
+use Money\Currency;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
-use PHPStan\Type\ObjectType;
 
 class MoneyMethodsReflectionExtension implements MethodsClassReflectionExtension
 {
@@ -16,19 +15,9 @@ class MoneyMethodsReflectionExtension implements MethodsClassReflectionExtension
             return false;
         }
 
-        try {
-            $method = $classReflection->getNativeReflection()->getMethod($methodName);
-
-            if (!$method->isStatic()) {
-                return true;
-            }
-        } catch (\Exception $e) {
-
-        }
-
         $currencies = Currency::getCurrencies();
 
-        return array_key_exists($methodName, $currencies);
+        return ($classReflection->getNativeReflection()->hasMethod($methodName) || array_key_exists($methodName, $currencies));
     }
 
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
@@ -36,12 +25,12 @@ class MoneyMethodsReflectionExtension implements MethodsClassReflectionExtension
         $currencies = Currency::getCurrencies();
 
         if (array_key_exists($methodName, $currencies)) {
-            $returnType = new ObjectType('Money\Money');
-            return new MoneyMethodReflection($classReflection, $methodName, true, false, $returnType);
+            return new MoneyStaticMethodReflection($classReflection, $methodName);
         }
 
         $method = $classReflection->getNativeReflection()->getMethod($methodName);
 
         return new MoneyMethodReflection($classReflection, $methodName, $method->isStatic(), $method->isPrivate());
     }
+
 }

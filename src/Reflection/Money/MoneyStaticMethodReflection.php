@@ -7,23 +7,18 @@ use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\FunctionVariant;
 use PHPStan\Type\Type;
-use PHPStan\Type\VoidType;
+use PHPStan\Type\ObjectType;
+use PHPStan\Type\IntegerType;
 
-class MoneyMethodReflection implements MethodReflection
+class MoneyStaticMethodReflection implements MethodReflection
 {
     private $classReflection;
     private $name;
-    private $static;
-    private $private;
-    private $return;
 
-    public function __construct(ClassReflection $classReflection, string $name,  bool $static, bool $private, $return = null)
+    public function __construct(ClassReflection $classReflection, string $name)
     {
         $this->classReflection = $classReflection;
         $this->name = $name;
-        $this->static = $static;
-        $this->private = $private;
-        $this->return = $return;
     }
 
     public function getDeclaringClass(): ClassReflection
@@ -38,17 +33,17 @@ class MoneyMethodReflection implements MethodReflection
 
     public function isStatic(): bool
     {
-        return $this->static;
+        return true;
     }
 
     public function isPrivate(): bool
     {
-        return $this->private;
+        return false;
     }
 
     public function isPublic(): bool
     {
-        return !$this->private;
+        return true;
     }
 
     public function getName(): string
@@ -68,9 +63,9 @@ class MoneyMethodReflection implements MethodReflection
     {
         return [
             new FunctionVariant(
-                [],
-                true,
-                new VoidType()
+                [new MoneyStaticParameterReflection()],
+                false,
+                new ObjectType('Money\Money')
             ),
         ];
     }
