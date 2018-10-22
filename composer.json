@@ -13,7 +13,7 @@
     "require": {
         "php": "~7.1",
         "phpstan/phpstan": "^0.10",
-        "moneyphp/money": "^1.3"
+        "moneyphp/money": "^1.3 || ^3.0"
     },
     "require-dev": {
         "phpunit/phpunit": "^7.2",

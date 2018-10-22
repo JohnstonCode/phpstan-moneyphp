@@ -3,6 +3,8 @@
 namespace JohnstonCode\Reflection\Money;
 
 use Money\Currency;
+use Money\Currencies\ISOCurrencies;
+use Money\Currencies\BitcoinCurrencies;
 use PHPStan\Reflection\ClassReflection;
 use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\MethodsClassReflectionExtension;
@@ -15,9 +17,17 @@ class MoneyMethodsReflectionExtension implements MethodsClassReflectionExtension
             return false;
         }
 
-        $currencies = Currency::getCurrencies();
+        if (method_exists('Money\Currency', 'getCurrencies')) {
+            $currencies = Currency::getCurrencies();
 
-        return array_key_exists($methodName, $currencies);
+            return array_key_exists($methodName, $currencies);
+        }
+
+        $currency = new Currency($methodName);
+        $ISOcurrencies = new ISOCurrencies();
+        $bitcoinCurrencies = new BitcoinCurrencies();
+
+        return $ISOcurrencies->contains($currency) || $bitcoinCurrencies->contains($currency);
     }
 
     public function getMethod(ClassReflection $classReflection, string $methodName): MethodReflection
