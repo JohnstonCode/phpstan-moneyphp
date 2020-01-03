@@ -2,22 +2,24 @@
 
 namespace JohnstonCode\Reflection\Money;
 
+use PHPStan\Analyser\OutOfClassScope;
 use PHPStan\Reflection\ClassMemberReflection;
 use PHPStan\Reflection\ClassReflection;
-use PHPStan\Reflection\MethodReflection;
 use PHPStan\Reflection\FunctionVariant;
-use PHPStan\Type\Type;
+use PHPStan\Reflection\MethodReflection;
+use PHPStan\Type\Generic\TemplateTypeMap;
 use PHPStan\Type\ObjectType;
-use PHPStan\Type\IntegerType;
 
 class MoneyStaticMethodReflection implements MethodReflection
 {
     private $classReflection;
     private $name;
+    private $callStaticMethod;
 
     public function __construct(ClassReflection $classReflection, string $name)
     {
         $this->classReflection = $classReflection;
+        $this->callStaticMethod = $this->classReflection->getMethod('__callStatic', new OutOfClassScope());
         $this->name = $name;
     }
 
@@ -63,10 +65,47 @@ class MoneyStaticMethodReflection implements MethodReflection
     {
         return [
             new FunctionVariant(
+                TemplateTypeMap::createEmpty(),
+                TemplateTypeMap::createEmpty(),
                 [new MoneyStaticParameterReflection()],
                 false,
                 new ObjectType('Money\Money')
             ),
         ];
+    }
+
+    public function getDocComment(): ?string
+    {
+        return $this->callStaticMethod->getDocComment();
+    }
+
+    public function isDeprecated(): \PHPStan\TrinaryLogic
+    {
+        return $this->callStaticMethod->isDeprecated();
+    }
+
+    public function getDeprecatedDescription(): ?string
+    {
+        return $this->callStaticMethod->getDeprecatedDescription();
+    }
+
+    public function isFinal(): \PHPStan\TrinaryLogic
+    {
+        return $this->callStaticMethod->isFinal();
+    }
+
+    public function isInternal(): \PHPStan\TrinaryLogic
+    {
+        return $this->callStaticMethod->isInternal();
+    }
+
+    public function getThrowType(): ?\PHPStan\Type\Type
+    {
+        return $this->callStaticMethod->getThrowType();
+    }
+
+    public function hasSideEffects(): \PHPStan\TrinaryLogic
+    {
+        return $this->callStaticMethod->hasSideEffects();
     }
 }
