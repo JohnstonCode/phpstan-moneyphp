@@ -1,6 +1,6 @@
 # Money class reflection extension for PHPStan
 
-* [PHPStan](https://github.com/phpstan/phpstan)
+* [PHPStan](https://phpstan.org/)
 * [Money](https://github.com/moneyphp/money)
 
 
